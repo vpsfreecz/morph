@@ -38,6 +38,8 @@ rec {
             };
           in
             scopedImport overrides;
+
+        defaultPkgs = importFn <nixpkgs> {};
       in
       { name = machineName;
         value = importFn importTarget {
@@ -54,14 +56,14 @@ rec {
                 # Apply network-level nixpkgs arguments as a baseline for
                 # per-machine nixpkgs arguments; mkDefault'ed so they
                 # can be overridden from within each machine
-                nixpkgs.localSystem = lib.mkDefault pkgs.buildPlatform;
-                nixpkgs.crossSystem = lib.mkDefault pkgs.hostPlatform;
-                nixpkgs.overlays = lib.mkDefault pkgs.overlays;
-                nixpkgs.pkgs = lib.mkDefault (import pkgs.path ({
+                nixpkgs.localSystem = lib.mkDefault defaultPkgs.buildPlatform;
+                nixpkgs.crossSystem = lib.mkDefault defaultPkgs.hostPlatform;
+                nixpkgs.overlays = lib.mkDefault defaultPkgs.overlays;
+                nixpkgs.pkgs = lib.mkDefault (import defaultPkgs.path ({
                   inherit (config.nixpkgs) localSystem;
                   # Merge nixpkgs.config using its merge function
                   config = options.nixpkgs.config.type.merge ""
-                    ([ { value = pkgs.config; } options.nixpkgs.config ]);
+                    ([ { value = defaultPkgs.config; } options.nixpkgs.config ]);
                 } // lib.optionalAttrs (config.nixpkgs.localSystem != config.nixpkgs.crossSystem) {
                   # Only override crossSystem if it is not equivalent to
                   # localSystem; works around issue #68
