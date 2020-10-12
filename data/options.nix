@@ -165,7 +165,7 @@ in
       type = attrsOf unspecified;
       default = [];
       example = [ { prefix = "nixpkgs"; path = "/home/test/git"; } ];
-      dsecription = ''
+      description = ''
         Per machine NIX_PATH override(s)
       '';
 
@@ -173,7 +173,7 @@ in
 
     importPath = mkOption {
       type = str;
-      dsecription = ''
+      description = ''
         Per machine import path of config evaluator (operating system entry point)
 
         By default this is <nixpkgs/nixos/lib/eval-config.nix>
